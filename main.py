@@ -22,6 +22,7 @@ def video_feed():
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
+stream.start()
 # check to see if this is the main thread of execution
 if __name__ == '__main__':
     # construct the argument parser and parse command line arguments
