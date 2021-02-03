@@ -35,7 +35,7 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     # start a thread that will perform motion detection
     t = threading.Thread(target=stream.detect_motion, args=(
-        args["frame_count"],))
+        args["frameCount"],))
     t.daemon = True
     t.start()
     # start the flask app
