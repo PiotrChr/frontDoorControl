@@ -1,0 +1,10 @@
+certifi==2020.6.20
+gym==0.14.0
+netifaces==0.10.9
+pyglet==1.3.2
+opencv-contrib-python==4.5.1.48
+Pillow==7.2.0
+psutil==5.7.2
+numpy==1.19.1
+flask==1.1.2
+imutils==0.5.4
