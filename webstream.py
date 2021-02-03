@@ -21,7 +21,7 @@ class WebStream:
     def stop(self):
         self.vs.stop()
 
-    def detect_motion(self, frameCount):
+    def detect_motion(self, frame_count):
         # initialize the motion detector and the total number of frames
         # read thus far
         md = SingleMotionDetector(accumWeight=0.1)
@@ -42,7 +42,7 @@ class WebStream:
             # if the total number of frames has reached a sufficient
             # number to construct a reasonable background model, then
             # continue to process the frame
-            if total > frameCount:
+            if total > frame_count:
                 # detect motion in the image
                 motion = md.detect(gray)
                 # check to see if motion was found in the frame
