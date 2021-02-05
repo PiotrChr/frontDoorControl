@@ -34,6 +34,8 @@ class WebStream:
         total = 0
         # loop over frames from the video stream
         while True and self.is_started:
+            if not self.is_started:
+                break
             # read the next frame from the video stream, resize it,
             # convert the frame to grayscale, and blur it
             frame = self.vs.read()
