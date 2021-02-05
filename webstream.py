@@ -33,7 +33,7 @@ class WebStream:
         md = SingleMotionDetector(accumWeight=0.1)
         total = 0
         # loop over frames from the video stream
-        while True:
+        while True and self.is_started:
             # read the next frame from the video stream, resize it,
             # convert the frame to grayscale, and blur it
             frame = self.vs.read()

@@ -25,6 +25,7 @@ def video_feed():
 def feed_start():
     if not stream.running():
         stream.start()
+        t.start()
 
     return jsonify(stream_running=stream.running())
 
@@ -50,7 +51,6 @@ if __name__ == '__main__':
     t = threading.Thread(target=stream.detect_motion, args=(
         args["frame_count"],))
     t.daemon = True
-    t.start()
 
     app.run(host=args["ip"], port=args["port"], debug=True,
             threaded=True, use_reloader=False)
