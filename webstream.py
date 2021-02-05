@@ -31,8 +31,10 @@ class WebStream:
         self.is_started = True
 
     def stop(self):
-        self.vs.stop()
-        time.sleep(0.5)
+        if self.vs:
+            self.vs.stop()
+            time.sleep(0.5)
+
         self.is_started = False
         time.sleep(0.5)
         self.vs = None
