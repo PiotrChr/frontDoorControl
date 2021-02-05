@@ -5,6 +5,7 @@ import threading
 import datetime
 import imutils
 import time
+
 import cv2
 
 
@@ -18,6 +19,9 @@ class WebStream:
     def running(self):
         return self.is_started
 
+    def init(self):
+        self.vs = VideoStream(usePiCamera=1)
+
     def start(self):
         self.vs.start()
         time.sleep(2.0)
@@ -25,7 +29,10 @@ class WebStream:
 
     def stop(self):
         self.vs.stop()
+        time.sleep(0.5)
         self.is_started = False
+        time.sleep(0.5)
+        self.vs = None
 
     def detect_motion(self, frame_count):
         # initialize the motion detector and the total number of frames
@@ -72,7 +79,9 @@ class WebStream:
 
     def generate(self):
         # loop over frames from the output stream
-        while True:
+        while True and self.is_started:
+            if not self.is_started:
+                break
             # wait until the lock is acquired
             with self.lock:
                 # check if the output frame is available, otherwise skip
