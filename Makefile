@@ -1,7 +1,7 @@
 default: start_pi
 
 start_pi:
-	python3 main.py --ip 0.0.0.0 --port 8000
+	python3 main.py --ip 0.0.0.0 --port 8001
 
 deps_pi:
 	pip3 install -r requirements.txt

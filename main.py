@@ -31,6 +31,11 @@ def feed_start():
     return jsonify(stream_running=stream.running())
 
 
+@app.route("/feed_status")
+def feed_status():
+    return jsonify(stream_running=stream.running())
+
+
 @app.route("/feed_stop")
 def feed_stop():
     if stream.running():
