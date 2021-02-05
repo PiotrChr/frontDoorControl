@@ -23,6 +23,9 @@ class WebStream:
         self.vs = VideoStream(usePiCamera=1)
 
     def start(self):
+        if not self.vs:
+            self.init()
+
         self.vs.start()
         time.sleep(2.0)
         self.is_started = True

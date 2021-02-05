@@ -24,6 +24,7 @@ def video_feed():
 @app.route("/feed_start")
 def feed_start():
     if not stream.running():
+        stream.start()
         t = create_thread()
         t.start()
 
