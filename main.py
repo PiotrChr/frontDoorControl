@@ -2,6 +2,7 @@ from webstream import WebStream
 import threading
 from flask import Response
 from flask import Flask
+from flask import jsonify
 from flask import render_template
 import argparse
 
@@ -16,16 +17,27 @@ def index():
 
 @app.route("/video_feed")
 def video_feed():
-    # return the response generated along with the specific media
-    # type (mime type)
     return Response(stream.generate(),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-stream.start()
-# check to see if this is the main thread of execution
+@app.route("/feed_start")
+def feed_start():
+    if not stream.running():
+        stream.start()
+
+    return jsonify(stream_running=True)
+
+
+@app.route("/feed_stop")
+def feed_stop():
+    if stream.running():
+        stream.stop()
+
+    return jsonify(stream_running=False)
+
+
 if __name__ == '__main__':
-    # construct the argument parser and parse command line arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--ip", type=str, required=True,
                     help="ip address of the device")
@@ -34,13 +46,14 @@ if __name__ == '__main__':
     ap.add_argument("-f", "--frame-count", type=int, default=32,
                     help="# of frames used to construct the background model")
     args = vars(ap.parse_args())
-    # start a thread that will perform motion detection
-    t = threading.Thread(target=stream.detect_motion, args=(
-        args["frame_count"],))
-    t.daemon = True
-    t.start()
-    # start the flask app
+
+    while stream.running():
+        t = threading.Thread(target=stream.detect_motion, args=(
+            args["frame_count"],))
+        t.daemon = True
+        t.start()
+
     app.run(host=args["ip"], port=args["port"], debug=True,
             threaded=True, use_reloader=False)
-# release the video stream pointer
+
 stream.stop()

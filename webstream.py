@@ -13,13 +13,19 @@ class WebStream:
         self.outputFrame = None
         self.lock = threading.Lock()
         self.vs = VideoStream(usePiCamera=1)
+        self.is_started = False
+
+    def running(self):
+        return self.is_started
 
     def start(self):
         self.vs.start()
         time.sleep(2.0)
+        self.is_started = True
 
     def stop(self):
         self.vs.stop()
+        self.is_started = False
 
     def detect_motion(self, frame_count):
         # initialize the motion detector and the total number of frames
