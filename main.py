@@ -26,7 +26,7 @@ def feed_start():
     if not stream.running():
         stream.start()
 
-    return jsonify(stream_running=True)
+    return jsonify(stream_running=stream.running())
 
 
 @app.route("/feed_stop")
@@ -34,7 +34,7 @@ def feed_stop():
     if stream.running():
         stream.stop()
 
-    return jsonify(stream_running=False)
+    return jsonify(stream_running=stream.running())
 
 
 if __name__ == '__main__':
@@ -47,11 +47,10 @@ if __name__ == '__main__':
                     help="# of frames used to construct the background model")
     args = vars(ap.parse_args())
 
-    while stream.running():
-        t = threading.Thread(target=stream.detect_motion, args=(
-            args["frame_count"],))
-        t.daemon = True
-        t.start()
+    t = threading.Thread(target=stream.detect_motion, args=(
+        args["frame_count"],))
+    t.daemon = True
+    t.start()
 
     app.run(host=args["ip"], port=args["port"], debug=True,
             threaded=True, use_reloader=False)
