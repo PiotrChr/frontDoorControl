@@ -34,11 +34,11 @@ class MotionSensor:
                 self.stop
             )
         )
+        self.t.start()
 
     def worker(self, off_handler, on_handler, current_read, stop):
         while True and not stop:
             current_read = GPIO.input(self.IN_PIN)
-
             if current_read == 1:
                 on_handler()
             if current_read == 0:
