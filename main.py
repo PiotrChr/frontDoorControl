@@ -4,10 +4,27 @@ from flask import Response
 from flask import Flask
 from flask import jsonify
 from flask import render_template
+from lib.motionsensor import motionsensor
 import argparse
 
 stream = WebStream()
 app = Flask(__name__)
+
+
+def motion_off():
+    print("off")
+
+
+def motion_on():
+    print("on")
+
+
+sensor = motionsensor.MotionSensor(
+    off_handler=motion_off,
+    on_handler=motion_on
+)
+
+sensor.start()
 
 
 @app.route("/")
