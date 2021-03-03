@@ -5,6 +5,7 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template
 from lib.motionsensor import motionsensor
+from lib.lightsensor import lightsensor
 import argparse
 
 # stream = WebStream()
@@ -19,12 +20,21 @@ def motion_on():
     print("on")
 
 
-sensor = motionsensor.MotionSensor(
-    off_handler=motion_off,
-    on_handler=motion_on
+def light_handler(light_level):
+    print(light_level)
+
+
+# motion_sensor = motionsensor.MotionSensor(
+#     off_handler=motion_off,
+#     on_handler=motion_on
+# )
+#
+# motion_sensor.start()
+
+light_sensor = lightsensor.LightSensor(
+    sensor_handler=light_handler
 )
 
-sensor.start()
 
 
 @app.route("/")
