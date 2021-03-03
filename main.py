@@ -34,6 +34,7 @@ def light_handler(light_level):
 light_sensor = lightsensor.LightSensor(
     sensor_handler=light_handler
 )
+light_sensor.start()
 
 
 

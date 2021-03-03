@@ -31,7 +31,7 @@ class LightSensor:
         self.t = None
         self.bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
-    def start_reading(self):
+    def start(self):
         self.stop = False
         self.t = threading.Thread(
             target=self.worker,
