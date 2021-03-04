@@ -63,5 +63,5 @@ class Accelerometer:
         self.read_word_2c(0x45)
 
     def gyro_z(self):
-        self.read_wor   d_2c(0x47)
+        self.read_word_2c(0x47)
 
