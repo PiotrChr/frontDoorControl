@@ -4,38 +4,15 @@ from flask import Response
 from flask import Flask
 from flask import jsonify
 from flask import render_template
-from lib.motionsensor import motionsensor
-from lib.lightsensor import lightsensor
+import frontDoorController
+
 import argparse
 
 # stream = WebStream()
 app = Flask(__name__)
 
-
-def motion_off():
-    print("off")
-
-
-def motion_on():
-    print("on")
-
-
-def light_handler(light_level):
-    print(light_level)
-
-
-# motion_sensor = motionsensor.MotionSensor(
-#     off_handler=motion_off,
-#     on_handler=motion_on
-# )
-#
-# motion_sensor.start()
-
-light_sensor = lightsensor.LightSensor(
-    sensor_handler=light_handler
-)
-light_sensor.start()
-
+front_door_controller = frontDoorController.FrontDoorController()
+front_door_controller.start_all()
 
 
 @app.route("/")
