@@ -54,8 +54,8 @@ index = []
 
 frame_skip = 100
 
-# plt.ion()
-# fig, axs = plt.subplots(3)
+plt.ion()
+fig, axs = plt.subplots(3)
 
 # Aktivieren, um das Modul ansprechen zu koennen
 bus.write_byte_data(address, power_mgmt_1, 0)
@@ -64,15 +64,15 @@ scale_x = -0.02
 scale_y = 0.02
 scale_z = -0.88
 
-x_numb = 0.01
-y_numb = 0.01
-z_numb = 0.02
+x_numb = 0.02
+y_numb = 0.02
+z_numb = 0.03
 
 
 def reduce_noise(ax, axis):
-    if (axis == 'x' and (ax > x_numb or ax < x_numb)) \
-      or (axis == 'y' and (ax > y_numb or ax < y_numb)) \
-      or (axis == 'z' and (ax > z_numb or ax < z_numb)):
+    if (axis == 'x' and (ax > x_numb or ax < -x_numb)) \
+      or (axis == 'y' and (ax > y_numb or ax < -y_numb)) \
+      or (axis == 'z' and (ax > z_numb or ax < -z_numb)):
         return ax
     else:
         return 0
@@ -103,9 +103,9 @@ def plot():
         beschleunigung_yout_skaliert = reduce_noise(round(float(beschleunigung_yout / 16384.0) + scale_y, 4), 'y')
         beschleunigung_zout_skaliert = reduce_noise(round(float(beschleunigung_zout / 16384.0) + scale_z, 4), 'z')
 
-        print(beschleunigung_xout_skaliert)   # x
-        print(beschleunigung_yout_skaliert)  # y
-        print(beschleunigung_zout_skaliert)  # z
+        # print(beschleunigung_xout_skaliert)   # x
+        # print(beschleunigung_yout_skaliert)  # y
+        # print(beschleunigung_zout_skaliert)  # z
 
         #
         # print(
@@ -125,22 +125,22 @@ def plot():
         #         beschleunigung_zout_skaliert
         #     )
         # )
-        # dataset_x.append(reduce_noise(beschleunigung_xout_skaliert))
-        # dataset_y.append(reduce_noise(beschleunigung_yout_skaliert))
-        # dataset_z.append(reduce_noise(beschleunigung_zout_skaliert))
-        # index.append(i)
+        dataset_x.append(beschleunigung_xout_skaliert)
+        dataset_y.append(beschleunigung_yout_skaliert)
+        dataset_z.append(beschleunigung_zout_skaliert)
+        index.append(i)
 
-        # if i % frame_skip == 0:
-        #     axs[0].plot(dataset_x)
-        #     axs[1].plot(dataset_y)
-        #     axs[2].plot(dataset_z)
-        #
-        #     plt.draw()
-        #     plt.pause(0.0001)
-        #
-        # # plt.clf()
-        #
-        # i = i + 1
+        if i % frame_skip == 0:
+            axs[0].plot(dataset_x)
+            axs[1].plot(dataset_y)
+            axs[2].plot(dataset_z)
+
+            plt.draw()
+            plt.pause(0.0001)
+
+        # plt.clf()
+
+        i = i + 1
         time.sleep(0.05)
 
 
