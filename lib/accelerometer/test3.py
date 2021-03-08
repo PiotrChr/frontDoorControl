@@ -62,10 +62,7 @@ bus.write_byte_data(address, power_mgmt_1, 0)
 
 
 def reduce_noise(ax):
-    if ax > 0.1:
-        return ax
-    else:
-        return 0
+    return round(ax, 4)
 
 
 def plot():
@@ -89,9 +86,9 @@ def plot():
         beschleunigung_yout = read_word_2c(0x3d)
         beschleunigung_zout = read_word_2c(0x3f)
 
-        beschleunigung_xout_skaliert = beschleunigung_xout / 16384.0
-        beschleunigung_yout_skaliert = beschleunigung_yout / 16384.0
-        beschleunigung_zout_skaliert = beschleunigung_zout / 16384.0
+        beschleunigung_xout_skaliert = round(beschleunigung_xout / 16384.0, 4)
+        beschleunigung_yout_skaliert = round(beschleunigung_yout / 16384.0, 4)
+        beschleunigung_zout_skaliert = round(beschleunigung_zout / 16384.0, 4)
 
         print(beschleunigung_xout_skaliert)   # x
         print(beschleunigung_yout_skaliert)  # y
