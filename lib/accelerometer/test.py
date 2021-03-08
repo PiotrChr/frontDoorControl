@@ -52,13 +52,20 @@ dataset_y = []
 dataset_z = []
 index = []
 
-frame_skip = 40
+frame_skip = 100
 
 plt.ion()
 fig, axs = plt.subplots(3)
 
 # Aktivieren, um das Modul ansprechen zu koennen
 bus.write_byte_data(address, power_mgmt_1, 0)
+
+
+def reduce_noise(ax):
+    if ax > 0.1:
+        return ax
+    else:
+        return 0
 
 
 def plot():
@@ -108,9 +115,9 @@ def plot():
         #         beschleunigung_zout_skaliert
         #     )
         # )
-        dataset_x.append(beschleunigung_xout_skaliert)
-        dataset_y.append(beschleunigung_yout_skaliert)
-        dataset_z.append(beschleunigung_zout_skaliert)
+        dataset_x.append(reduce_noise(beschleunigung_xout_skaliert))
+        dataset_y.append(reduce_noise(beschleunigung_yout_skaliert))
+        dataset_z.append(reduce_noise(beschleunigung_zout_skaliert))
         index.append(i)
 
         if i % frame_skip == 0:
