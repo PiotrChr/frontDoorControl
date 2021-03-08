@@ -52,7 +52,8 @@ dataset_y = []
 dataset_z = []
 index = []
 
-i = 0
+frame_skip = 40
+
 plt.ion()
 fig, axs = plt.subplots(3)
 
@@ -61,6 +62,7 @@ bus.write_byte_data(address, power_mgmt_1, 0)
 
 
 def plot():
+    i = 0
     while True:
         # print("Gyroskop")
         # print("--------")
@@ -111,11 +113,15 @@ def plot():
         dataset_z.append(beschleunigung_zout_skaliert)
         index.append(i)
 
-        axs[0].plot(dataset_x)
-        axs[1].plot(dataset_y)
-        axs[2].plot(dataset_z)
-        
-        plt.draw()
-        plt.pause(0.0001)
+        if i % frame_skip == 0:
+            axs[0].plot(dataset_x)
+            axs[1].plot(dataset_y)
+            axs[2].plot(dataset_z)
+
+            plt.draw()
+            plt.pause(0.0001)
+
         # plt.clf()
+
+        i = i + 1
         time.sleep(0.05)
