@@ -56,12 +56,12 @@ while True:
     gyroskop_yout = read_word_2c(0x45)
     gyroskop_zout = read_word_2c(0x47)
 
-    print("gyroskop_xout: ", ("%5d" % gyroskop_xout), " skaliert: ", (gyroskop_xout / 131))
-    print("gyroskop_yout: ", ("%5d" % gyroskop_yout), " skaliert: ", (gyroskop_yout / 131))
-    print("gyroskop_zout: ", ("%5d" % gyroskop_zout), " skaliert: ", (gyroskop_zout / 131))
-
-    print("Beschleunigungssensor")
-    print("---------------------")
+    # print("gyroskop_xout: ", ("%5d" % gyroskop_xout), " skaliert: ", (gyroskop_xout / 131))
+    # print("gyroskop_yout: ", ("%5d" % gyroskop_yout), " skaliert: ", (gyroskop_yout / 131))
+    # print("gyroskop_zout: ", ("%5d" % gyroskop_zout), " skaliert: ", (gyroskop_zout / 131))
+    #
+    # print("Beschleunigungssensor")
+    # print("---------------------")
 
     beschleunigung_xout = read_word_2c(0x3b)
     beschleunigung_yout = read_word_2c(0x3d)
@@ -71,25 +71,26 @@ while True:
     beschleunigung_yout_skaliert = beschleunigung_yout / 16384.0
     beschleunigung_zout_skaliert = beschleunigung_zout / 16384.0
 
-    print("beschleunigung_xout: ", ("%6d" % beschleunigung_xout), " skaliert: ", beschleunigung_xout_skaliert)
-    print("beschleunigung_yout: ", ("%6d" % beschleunigung_yout), " skaliert: ", beschleunigung_yout_skaliert)
-    print("beschleunigung_zout: ", ("%6d" % beschleunigung_zout), " skaliert: ", beschleunigung_zout_skaliert)
+    print(beschleunigung_xout_skaliert)   # x
+    print(beschleunigung_yout_skaliert)  # y
+    print(beschleunigung_zout_skaliert)  # z
 
-    print(
-        "X Rotation: ",
-        get_x_rotation(
-            beschleunigung_xout_skaliert,
-            beschleunigung_yout_skaliert,
-            beschleunigung_zout_skaliert
-        )
-    )
-    
-    print(
-        "Y Rotation: ",
-        get_y_rotation(
-            beschleunigung_xout_skaliert,
-            beschleunigung_yout_skaliert,
-            beschleunigung_zout_skaliert
-        )
-    )
-    time.sleep(0.1)
+    #
+    # print(
+    #     "X Rotation: ",
+    #     get_x_rotation(
+    #         beschleunigung_xout_skaliert,
+    #         beschleunigung_yout_skaliert,
+    #         beschleunigung_zout_skaliert
+    #     )
+    # )
+    #
+    # print(
+    #     "Y Rotation: ",
+    #     get_y_rotation(
+    #         beschleunigung_xout_skaliert,
+    #         beschleunigung_yout_skaliert,
+    #         beschleunigung_zout_skaliert
+    #     )
+    # )
+    time.sleep(0.05)
