@@ -99,9 +99,9 @@ def plot():
         beschleunigung_yout = read_word_2c(0x3d)
         beschleunigung_zout = read_word_2c(0x3f)
 
-        beschleunigung_xout_skaliert = round(beschleunigung_xout / 16384.0, 4) + scale_x
-        beschleunigung_yout_skaliert = round(beschleunigung_yout / 16384.0, 4) + scale_y
-        beschleunigung_zout_skaliert = round(beschleunigung_zout / 16384.0, 4) + scale_z
+        beschleunigung_xout_skaliert = round(float(beschleunigung_xout / 16384.0) + scale_x, 4)
+        beschleunigung_yout_skaliert = round(float(beschleunigung_yout / 16384.0) + scale_y, 4)
+        beschleunigung_zout_skaliert = round(float(beschleunigung_zout / 16384.0) + scale_z, 4)
 
         print(beschleunigung_xout_skaliert)   # x
         print(beschleunigung_yout_skaliert)  # y
