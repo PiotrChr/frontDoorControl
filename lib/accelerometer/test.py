@@ -132,3 +132,6 @@ def plot():
 
         i = i + 1
         time.sleep(0.05)
+
+
+plot()
