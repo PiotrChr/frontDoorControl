@@ -71,8 +71,8 @@ z_numb = 0.02
 
 def reduce_noise(ax, axis):
     if (axis == 'x' and (ax > x_numb or ax < x_numb)) \
-      or (axis == 'y' and (ax > x_numb or ax < y_numb)) \
-      or (axis == 'z' and (ax > x_numb or ax < z_numb)):
+      or (axis == 'y' and (ax > y_numb or ax < y_numb)) \
+      or (axis == 'z' and (ax > z_numb or ax < z_numb)):
         return ax
     else:
         return 0
