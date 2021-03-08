@@ -60,9 +60,22 @@ frame_skip = 100
 # Aktivieren, um das Modul ansprechen zu koennen
 bus.write_byte_data(address, power_mgmt_1, 0)
 
+scale_x = -0.02
+scale_y = 0.02
+scale_z = -0.88
 
-def reduce_noise(ax):
-    return round(ax, 4)
+x_numb = 0.02
+y_numb = 0.02
+z_numb = 0.02
+
+
+def reduce_noise(ax, axis):
+    if (axis == 'x' and (ax > x_numb or ax < x_numb)) \
+      or (axis == 'y' and (ax > x_numb or ax < y_numb)) \
+      or (axis == 'z' and (ax > x_numb or ax < z_numb)):
+        return ax
+    else:
+        return 0
 
 
 def plot():
@@ -86,9 +99,9 @@ def plot():
         beschleunigung_yout = read_word_2c(0x3d)
         beschleunigung_zout = read_word_2c(0x3f)
 
-        beschleunigung_xout_skaliert = round(beschleunigung_xout / 16384.0, 4)
-        beschleunigung_yout_skaliert = round(beschleunigung_yout / 16384.0, 4)
-        beschleunigung_zout_skaliert = round(beschleunigung_zout / 16384.0, 4)
+        beschleunigung_xout_skaliert = round(beschleunigung_xout / 16384.0, 4) + scale_x
+        beschleunigung_yout_skaliert = round(beschleunigung_yout / 16384.0, 4) + scale_y
+        beschleunigung_zout_skaliert = round(beschleunigung_zout / 16384.0, 4) + scale_z
 
         print(beschleunigung_xout_skaliert)   # x
         print(beschleunigung_yout_skaliert)  # y
