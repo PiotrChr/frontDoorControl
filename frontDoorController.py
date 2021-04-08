@@ -1,5 +1,7 @@
 from lib.motionsensor import motionsensor
 from lib.lightsensor import lightsensor
+from lib.leds import leds
+from lib.screen import screen
 
 
 class FrontDoorController:
@@ -12,6 +14,15 @@ class FrontDoorController:
         self.light_sensor = lightsensor.LightSensor(
             sensor_handler=self.light_handler
         )
+        self.leds = leds.Leds()
+        self.screen = screen.Screen()
+
+        self.init()
+
+    def init(self):
+        self.leds.red_off()
+        self.leds.white_off()
+        self.screen.screen_off()
 
     def start_all(self):
         self.motion_sensor.start()

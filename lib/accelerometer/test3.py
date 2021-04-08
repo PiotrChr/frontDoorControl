@@ -84,13 +84,13 @@ def plot():
         # print("Gyroskop")
         # print("--------")
 
-        # gyroskop_xout = read_word_2c(0x43)
-        # gyroskop_yout = read_word_2c(0x45)
-        # gyroskop_zout = read_word_2c(0x47)
+        gyroskop_xout = read_word_2c(0x43)
+        gyroskop_yout = read_word_2c(0x45)
+        gyroskop_zout = read_word_2c(0x47)
 
-        # print("gyroskop_xout: ", ("%5d" % gyroskop_xout), " skaliert: ", (gyroskop_xout / 131))
-        # print("gyroskop_yout: ", ("%5d" % gyroskop_yout), " skaliert: ", (gyroskop_yout / 131))
-        # print("gyroskop_zout: ", ("%5d" % gyroskop_zout), " skaliert: ", (gyroskop_zout / 131))
+        print("gyroskop_xout: ", ("%5d" % gyroskop_xout), " skaliert: ", (gyroskop_xout / 131))
+        print("gyroskop_yout: ", ("%5d" % gyroskop_yout), " skaliert: ", (gyroskop_yout / 131))
+        print("gyroskop_zout: ", ("%5d" % gyroskop_zout), " skaliert: ", (gyroskop_zout / 131))
         #
         # print("Beschleunigungssensor")
         # print("---------------------")
@@ -125,22 +125,22 @@ def plot():
         #         beschleunigung_zout_skaliert
         #     )
         # )
-        dataset_x.append(beschleunigung_xout_skaliert)
-        dataset_y.append(beschleunigung_yout_skaliert)
-        dataset_z.append(beschleunigung_zout_skaliert)
-        index.append(i)
-
-        if i % frame_skip == 0:
-            axs[0].plot(dataset_x)
-            axs[1].plot(dataset_y)
-            axs[2].plot(dataset_z)
-
-            plt.draw()
-            plt.pause(0.0001)
-
-        # plt.clf()
-
-        i = i + 1
+        # dataset_x.append(beschleunigung_xout_skaliert)
+        # dataset_y.append(beschleunigung_yout_skaliert)
+        # dataset_z.append(beschleunigung_zout_skaliert)
+        # index.append(i)
+        #
+        # if i % frame_skip == 0:
+        #     axs[0].plot(dataset_x)
+        #     axs[1].plot(dataset_y)
+        #     axs[2].plot(dataset_z)
+        #
+        #     plt.draw()
+        #     plt.pause(0.0001)
+        #
+        # # plt.clf()
+        #
+        #i = i + 1
         time.sleep(0.05)
 
 

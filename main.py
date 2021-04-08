@@ -5,11 +5,14 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template
 import frontDoorController
+import RPi.GPIO as GPIO
 
 import argparse
 
-# stream = WebStream()
+stream = WebStream()
 app = Flask(__name__)
+
+GPIO.setmode(GPIO.BCM)
 
 front_door_controller = frontDoorController.FrontDoorController()
 front_door_controller.start_all()
@@ -20,41 +23,41 @@ def index():
     return render_template("index.html")
 
 
-# @app.route("/video_feed")
-# def video_feed():
-#     return Response(stream.generate(),
-#                     mimetype="multipart/x-mixed-replace; boundary=frame")
+@app.route("/video_feed")
+def video_feed():
+    return Response(stream.generate(),
+                    mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-# @app.route("/feed_start")
-# def feed_start():
-#     if not stream.running():
-#         stream.start()
-#         t = create_thread()
-#         t.start()
-#
-#     return jsonify(stream_running=stream.running())
+@app.route("/feed_start")
+def feed_start():
+    if not stream.running():
+        stream.start()
+        t = create_thread()
+        t.start()
+
+    return jsonify(stream_running=stream.running())
 
 
-# @app.route("/feed_status")
-# def feed_status():
-#     return jsonify(stream_running=stream.running())
+@app.route("/feed_status")
+def feed_status():
+    return jsonify(stream_running=stream.running())
 
 
-# @app.route("/feed_stop")
-# def feed_stop():
-#     if stream.running():
-#         stream.stop()
-#
-#     return jsonify(stream_running=stream.running())
+@app.route("/feed_stop")
+def feed_stop():
+    if stream.running():
+        stream.stop()
+
+    return jsonify(stream_running=stream.running())
 
 
-# def create_thread():
-#     thread = threading.Thread(target=stream.detect_motion, args=(
-#         args["frame_count"],))
-#
-#     thread.daemon = True
-#     return thread
+def create_thread():
+    thread = threading.Thread(target=stream.detect_motion, args=(
+        args["frame_count"],))
+
+    thread.daemon = True
+    return thread
 
 
 if __name__ == '__main__':
