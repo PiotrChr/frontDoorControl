@@ -12,10 +12,8 @@ import argparse
 stream = WebStream()
 app = Flask(__name__)
 
-GPIO.setmode(GPIO.BCM)
-
 front_door_controller = frontDoorController.FrontDoorController()
-front_door_controller.start_all()
+# front_door_controller.start_all()
 
 
 @app.route("/")
@@ -50,6 +48,20 @@ def feed_stop():
         stream.stop()
 
     return jsonify(stream_running=stream.running())
+
+
+@app.route("/light_on")
+def light_on():
+    front_door_controller.leds.white_on()
+
+    return jsonify(light_on=True)
+
+
+@app.route("/light_off")
+def light_off():
+    front_door_controller.leds.white_off()
+
+    return jsonify(light_on=False)
 
 
 def create_thread():

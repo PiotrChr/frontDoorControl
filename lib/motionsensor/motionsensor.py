@@ -2,13 +2,14 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import time
+from settings import settings
 
 lock = threading.Lock()
 
 
 class MotionSensor:
     def __init__(self, off_handler=None, on_handler=None):
-        self.IN_PIN = 11
+        self.IN_PIN = settings['motion']['pin']
         self.stop = False
         self.current_read = 0
         self.off_handler = off_handler
@@ -16,8 +17,8 @@ class MotionSensor:
         self.t = None
 
         GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(11, GPIO.IN)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.IN_PIN, GPIO.IN)
 
     def stop(self):
         self.stop = True

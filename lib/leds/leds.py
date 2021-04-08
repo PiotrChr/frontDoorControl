@@ -14,7 +14,7 @@ class Leds:
         GPIO.output(self.LED_RED, 0)
 
     def white_off(self):
-        GPIO.output(self.LED_RED, 0)
+        GPIO.output(self.LED_WHITE, 0)
 
     def red_on(self):
         GPIO.output(self.LED_RED, 1)
