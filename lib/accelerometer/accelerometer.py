@@ -1,7 +1,8 @@
 import smbus
 import math
 from settings import settings
-
+import threading
+import time
 
 class Accelerometer:
     DEVICE = settings['acc']['addr']
@@ -31,11 +32,36 @@ class Accelerometer:
     GYRO_16B_CONV = 131
     ACC_16B_CONV = 16384.0
 
-    def __init__(self):
+    def __init__(self, sensor_handler=None):
         self.stop = False
         self.bus = smbus.SMBus(1)
 
+        self.t = None
+
+        self.handler = sensor_handler
+
         self.bus.write_byte_data(self.DEVICE, self.POWER_MGMT_1, 0)
+
+    def start(self):
+        self.stop = False
+        self.t = threading.Thread(
+            target=self.worker,
+            daemon=True,
+            args=(
+                self.handler,
+                self.stop,
+            )
+        )
+        self.t.start()
+
+    def worker(self, sensor_handler, stop):
+        while True and not stop:
+            sensor_handler(
+                self.acc_x(),
+                self.acc_y(),
+                self.acc_z()
+            )
+            time.sleep(1)
 
     def read_byte(self, reg):
         return self.bus.read_byte_data(self.DEVICE, reg)
@@ -94,7 +120,6 @@ class Accelerometer:
             return 0
 
     def x(self):
-        print(self.read_word_2c(self.ACC_X))
         return self.read_word_2c(self.ACC_X)
 
     def y(self):

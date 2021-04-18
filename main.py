@@ -13,12 +13,56 @@ stream = WebStream()
 app = Flask(__name__)
 
 front_door_controller = frontDoorController.FrontDoorController()
-# front_door_controller.start_all()
+front_door_controller.start_all()
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/maintenance/<action>/<value>")
+@app.route("/maintenance/<action>")
+def maintenance(action=None, value=None):
+    if action.find('clear_') != -1:
+        table = action.split('clear_')[1]
+        front_door_controller.clear_db(table, value)
+
+        return jsonify({'status': 'Table %s cleared' % (table,)})
+
+    return jsonify({'status': 'No action performed'})
+
+
+@app.route("/status")
+def status():
+    return jsonify(status=front_door_controller.read_status())
+
+
+@app.route("/read_motion/<start_date>/<end_date>")
+@app.route("/read_motion/<start_date>")
+@app.route("/read_motion")
+def read_motion(start_date=None, end_date=None):
+    motion = front_door_controller.read_motion_by_date(start_date, end_date)
+
+    return jsonify(motion=motion)
+
+
+@app.route("/read_acc/<start_date>/<end_date>")
+@app.route("/read_acc/<start_date>")
+@app.route("/read_acc")
+def read_acc(start_date=None, end_date=None):
+    acc = front_door_controller.read_acc_by_date(start_date, end_date)
+
+    return jsonify(acc=acc)
+
+
+@app.route("/read_light/<start_date>/<end_date>")
+@app.route("/read_light/<start_date>")
+@app.route("/read_light")
+def read_light(start_date=None, end_date=None):
+    light = front_door_controller.read_light_by_date(start_date, end_date)
+
+    return jsonify(light=light)
 
 
 @app.route("/video_feed")
