@@ -1,5 +1,5 @@
 # import the necessary packages
-from imagesearch.motion_detection.singlemotiondetector import SingleMotionDetector
+from src.imagesearch.motion_detection.singlemotiondetector import SingleMotionDetector
 from imutils.video import VideoStream
 import threading
 import datetime

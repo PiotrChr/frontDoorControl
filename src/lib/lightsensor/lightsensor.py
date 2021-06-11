@@ -1,48 +1,30 @@
-import threading
 import smbus
-import time
+from settings import settings
 
 
 class LightSensor:
-    DEVICE = 0x23  # Default device I2C address
-    POWER_DOWN = 0x00  # No active state
-    POWER_ON = 0x01  # Power on
-    RESET = 0x07  # Reset data register value
+    DEVICE = settings['light']['addr']  # Default device I2C address
+    POWER_DOWN = settings['light']['POWER_DOWN']
+    POWER_ON = settings['light']['POWER_ON']  # Power on
+    RESET = settings['light']['RESET']  # Reset data register value
     # Start measurement at 4lx resolution. Time typically 16ms.
-    CONTINUOUS_LOW_RES_MODE = 0x13
+    CONTINUOUS_LOW_RES_MODE = settings['light']['CONTINUOUS_LOW_RES_MODE']
     # Start measurement at 1lx resolution. Time typically 120ms
-    CONTINUOUS_HIGH_RES_MODE_1 = 0x10
+    CONTINUOUS_HIGH_RES_MODE_1 = settings['light']['CONTINUOUS_HIGH_RES_MODE_1']
     # Start measurement at 0.5lx resolution. Time typically 120ms
-    CONTINUOUS_HIGH_RES_MODE_2 = 0x11
+    CONTINUOUS_HIGH_RES_MODE_2 = settings['light']['CONTINUOUS_HIGH_RES_MODE_2']
     # Start measurement at 1lx resolution. Time typically 120ms
     # Device is automatically set to Power Down after measurement.
-    ONE_TIME_HIGH_RES_MODE_1 = 0x20
+    ONE_TIME_HIGH_RES_MODE_1 = settings['light']['ONE_TIME_HIGH_RES_MODE_1']
     # Start measurement at 0.5lx resolution. Time typically 120ms
     # Device is automatically set to Power Down after measurement.
-    ONE_TIME_HIGH_RES_MODE_2 = 0x21
+    ONE_TIME_HIGH_RES_MODE_2 = settings['light']['ONE_TIME_HIGH_RES_MODE_2']
     # Start measurement at 1lx resolution. Time typically 120ms
     # Device is automatically set to Power Down after measurement.
-    ONE_TIME_LOW_RES_MODE = 0x23
+    ONE_TIME_LOW_RES_MODE = settings['light']['ONE_TIME_LOW_RES_MODE']
 
-    def __init__(self, sensor_handler):
-        self.sensor_handler = sensor_handler
-        self.current_read = None
-        self.stop = False
-        self.t = None
+    def __init__(self):
         self.bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
-
-    def start(self):
-        self.stop = False
-        self.t = threading.Thread(
-            target=self.worker,
-            daemon=True,
-            args=(
-                self.sensor_handler,
-                self.current_read,
-                self.stop,
-            )
-        )
-        self.t.start()
 
     @staticmethod
     def convert_to_number(data):
@@ -59,9 +41,3 @@ class LightSensor:
             self.ONE_TIME_HIGH_RES_MODE_1
         )
         return self.convert_to_number(data)
-
-    def worker(self, sensor_handler, current_read, stop):
-        while True and not stop:
-            current_read = self.read_light()
-            sensor_handler(current_read)
-            time.sleep(1)
