@@ -1,4 +1,5 @@
 settings = {
+    'snd_driver': 'cm108',
     'HOST': '192.168.178.33',
     'acc': {
         'pin': None,
