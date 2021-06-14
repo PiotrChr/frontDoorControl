@@ -7,13 +7,15 @@ import threading
 class LightController(baseService.BaseService):
     def __init__(
             self,
-            light_sensor: lightsensor.LightSensor
+            light_sensor: lightsensor.LightSensor,
+            event: threading.Event
     ) -> None:
         super().__init__()
 
         self.light_sensor = light_sensor
         self.sensor_handler = None
         self.current_read = None
+        self.event = event
         self.stop = False
         self.t = None
 
@@ -24,7 +26,7 @@ class LightController(baseService.BaseService):
         while True and not stop:
             current_read = self.light_sensor.read_light()
             sensor_handler(current_read)
-            time.sleep(1)
+            self.event.wait(1)
 
     def start(self):
         self.stop = False

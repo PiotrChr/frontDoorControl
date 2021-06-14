@@ -9,12 +9,11 @@ class MessagePrompt:
     ) -> None:
         self.message_window = message_window
         self.t = None
-        self.stop = False
+        self.stopped = False
         self.handler = None
-        self.new_message = None
 
     def start(self):
-        self.stop = False
+        self.stopped = False
         self.t = threading.Thread(
             target=self.worker,
             daemon=True
@@ -22,20 +21,15 @@ class MessagePrompt:
         self.t.start()
 
     def dispatch_message(self, message):
-        self.new_message = message
+        self.message_window.update_message(message)
 
     def stop(self):
-        self.stop = True
+        self.stopped = True
+        self.message_window.close()
 
     def set_handlers(self, handler=None):
         self.handler = handler
 
     def worker(self):
+        self.message_window.init()
         self.message_window.start()
-
-        if self.new_message:
-            self.message_window.send_message(self.new_message)
-            self.new_message = None
-
-        if self.stop:
-            self.message_window.close()

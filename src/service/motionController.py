@@ -9,12 +9,14 @@ lock = threading.Lock()
 class MotionController(baseService.BaseService):
     def __init__(
             self,
-            motion_sensor: motionsensor.MotionSensor
+            motion_sensor: motionsensor.MotionSensor,
+            event: threading.Event
     ) -> None:
         super().__init__()
 
         self.motion_sensor = motion_sensor
         self.stop = False
+        self.event = event
         self.off_handler = None
         self.on_handler = None
         self.t = None
@@ -47,4 +49,4 @@ class MotionController(baseService.BaseService):
             if current_read == 0:
                 off_handler()
 
-            time.sleep(0.2)
+            self.event.wait(0.2)
