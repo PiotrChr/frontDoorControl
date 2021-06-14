@@ -8,6 +8,10 @@ class Db:
     TABLE_ACC = 'acc'
     TABLE_MOTION = 'motion'
     TABLE_LIGHT = 'light'
+    TABLE_MESSENGER = 'messenger'
+
+    COLUMN_CONTEXT = 'context'
+    COLUMN_MESSAGE = 'message'
 
     COLUMN_ACC_X = 'acc_x'
     COLUMN_ACC_Y = 'acc_y'
@@ -64,6 +68,21 @@ class Db:
                 """)
 
                 self.connection.execute("""
+                    CREATE TABLE IF NOT EXISTS messenger (
+                        id INTEGER PRIMARY KEY,
+                        message TEXT NOT NULL,
+                        context INT NOT NULL,
+                        handled INT NOT NULL,
+                        created_at DATETIME NOT NULL
+                    )
+                """)
+
+                self.connection.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_messenger_created_at
+                    ON messenger (created_at)
+                """)
+
+                self.connection.execute("""
                     CREATE TABLE IF NOT EXISTS motion (
                         id INTEGER PRIMARY KEY,
                         created_at DATETIME NOT NULL    
@@ -72,7 +91,7 @@ class Db:
 
                 self.connection.execute("""
                     CREATE INDEX IF NOT EXISTS idx_motion_created_at
-                    ON acc (created_at)
+                    ON motion (created_at)
                 """)
 
                 self.connection.execute("""
@@ -85,8 +104,20 @@ class Db:
 
                 self.connection.execute("""
                     CREATE INDEX IF NOT EXISTS idx_light_created_at
-                    ON acc (created_at)
+                    ON light (created_at)
                 """)
+        except Exception as e:
+            print('Exception', e)
+
+    def save_message(self, message, context):
+        print("Saving", message, context)
+        try:
+            with self.connection:
+                self.connection.execute("""
+                    INSERT INTO messenger
+                    values (?,?,?,?,?)
+                """, (None, message, context, 0, datetime.now()))
+                print("Saved")
         except Exception as e:
             print('Exception', e)
 
@@ -142,6 +173,36 @@ class Db:
         except Exception as e:
             print('Exception', e)
 
+    def set_message_as_handled(self, _id):
+        try:
+            with self.connection:
+                self.connection.execute("""
+                    UPDATE messenger
+                    SET handled = 1
+                    WHERE id = ?
+                """, (_id,))
+        except Exception as e:
+            print('Exception', e)
+
+    def get_last_message_by_context(self, context):
+        try:
+            with self.connection:
+                cur = self.connection.cursor()
+                cur.execute("""
+                    SELECT * from messenger
+                    WHERE 
+                        context = ?
+                    AND handled = 0
+                    ORDER BY 
+                        created_at ASC
+                    LIMIT 1
+                """, (context,))
+
+                return cur.fetchone()
+
+        except Exception as e:
+            print('Exception', e)
+
     def get_acc_by_date(self, start, stop):
         return self.get_by_date('acc', start, stop)
 
@@ -155,7 +216,6 @@ class Db:
         with self.connection:
             cur = self.connection.cursor()
 
-            print(start, stop)
             cur.execute("""
                 SELECT * FROM %s
                 WHERE

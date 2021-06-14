@@ -50,4 +50,5 @@ settings = {
     'led_white': {
         'pin': 8
     },
+    'root_dir': '/home/pi/frontDoorControl/'
 }

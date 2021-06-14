@@ -1,7 +1,6 @@
 import speech_recognition as sr
 import threading
 from src.lib.voiceControl import voiceControl
-from pprint import pprint
 
 
 class SpeechRecognition:
@@ -12,11 +11,11 @@ class SpeechRecognition:
         self.recognizer = sr.Recognizer()
         self.handler = speech_recognition_handler
 
-        self.stop = False
+        self.stopped = False
         self.t = None
 
     def start(self):
-        self.stop = False
+        self.stopped = False
         self.t = threading.Thread(
             target=self.worker,
             daemon=True,
@@ -24,34 +23,40 @@ class SpeechRecognition:
         self.t.start()
 
     def stop(self):
-        self.stop = True
+        self.stopped = True
 
     def recognize(self, audio):
         try:
             return self.recognizer.recognize_google(audio)
         except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
+            if self.handler.error_handler:
+                self.handler.error_handler(
+                    "Google Speech Recognition could not understand audio"
+                )
         except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+            if self.handler.error_handler:
+                self.handler.error_handler(
+                    "Could not request results from Google Speech Recognition service; {0}".format(e)
+                )
 
     def listen(self):
         with sr.Microphone() as source:
             self.recognizer.adjust_for_ambient_noise(source)
-
-            audio = self.recognizer.listen(
-                source,
-                timeout=self.TIMEOUT,
-                phrase_time_limit=self.PHRASE_TIME_LIMIT,
-            )
-
-            pprint(audio)
+            try:
+                audio = self.recognizer.listen(
+                    source,
+                    timeout=self.TIMEOUT,
+                    phrase_time_limit=self.PHRASE_TIME_LIMIT,
+                )
+            except sr.WaitTimeoutError:
+                if self.handler.idle_handler:
+                    self.handler.idle_handler()
 
         return audio
 
     def worker(self):
-        while True and not self.stop:
+        while True and not self.stopped:
             audio = self.listen()
             recognized_text = self.recognize(audio)
-            print('recognized text', recognized_text)
             if not self.handler.handle(recognized_text):
-                self.stop = True
+                self.stopped = True

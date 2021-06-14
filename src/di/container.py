@@ -21,7 +21,9 @@ from src.lib.concierge import helpers
 from src.lib.doorOpener import door_opener
 from src.lib.buttons import buttons as libbuttons
 from src.service import buttonController
-from src.lib.view import messageWindow, messagePrompt
+from src.lib.messaging import promptMessanger, dbMessenger
+import logging
+import threading
 
 
 class Container(containers.DeclarativeContainer):
@@ -31,13 +33,18 @@ class Container(containers.DeclarativeContainer):
         db.Db
     )
 
+    event = providers.Singleton(
+        threading.Event
+    )
+
     # Services
     gpio = providers.Singleton(
         gpio.Gpio
     )
 
     voice_control = providers.Factory(
-        voiceControl.VoiceControl
+        voiceControl.VoiceControl,
+        event=event
     )
 
     speech_recognition = providers.Factory(
@@ -60,7 +67,8 @@ class Container(containers.DeclarativeContainer):
 
     light_controller = providers.Factory(
         lightController.LightController,
-        light_sensor=light_sensor
+        light_sensor=light_sensor,
+        event=event
     )
 
     leds = providers.Factory(
@@ -75,7 +83,8 @@ class Container(containers.DeclarativeContainer):
 
     motion_controller = providers.Factory(
         motionController.MotionController,
-        motion_sensor=motion_sensor
+        motion_sensor=motion_sensor,
+        event=event
     )
 
     screen = providers.Factory(
@@ -106,7 +115,8 @@ class Container(containers.DeclarativeContainer):
 
     buttons_controller = providers.Factory(
         buttonController.ButtonController,
-        buttons=buttons
+        buttons=buttons,
+        event=event
     )
 
     door_opener = providers.Factory(
@@ -117,18 +127,15 @@ class Container(containers.DeclarativeContainer):
         voiceAnalysis.VoiceAnalysis
     )
 
-    message_window = providers.Factory(
-        messageWindow.MessageWindow
-    )
-
-    message_prompt = providers.Factory(
-        messagePrompt.MessagePrompt,
-        message_window=message_window
+    prompt_messenger = providers.Factory(
+        promptMessanger.PromptMessenger,
+        db=db
     )
 
     concierge = providers.Factory(
         concierge.Concierge,
         db=db,
+        event=event,
         helpers=helpers,
         door_opener=door_opener,
         speech=speech_recognition,
@@ -139,7 +146,7 @@ class Container(containers.DeclarativeContainer):
         acc=acc_controller,
         motion=motion_controller,
         light=light_controller,
-        prompt=message_prompt,
+        prompt_messenger=prompt_messenger,
         screen=screen
     )
 

@@ -9,7 +9,8 @@ class ButtonController(baseService.BaseService):
 
     def __init__(
             self,
-            buttons: libbuttons.Buttons
+            buttons: libbuttons.Buttons,
+            event: threading.Event
     ):
         super().__init__()
 
@@ -17,6 +18,7 @@ class ButtonController(baseService.BaseService):
         self.stop = False
         self.handler = None
         self.buttons = buttons
+        self.event = event
         self.lastLockTime = time.time()
 
     def set_handler(self, handler):
@@ -40,19 +42,14 @@ class ButtonController(baseService.BaseService):
     def worker(self, handler, stop):
         while True and not self.stop:
             now = time.time()
-
             if now - self.lastLockTime < self.LOCK_TIME:
-                # print("locked")
                 continue
 
             red_reading = self.buttons.read_red()
             # black_reading = self.buttons.read_black()
             black_reading = False
 
-            # print("red", red_reading)
-
             if red_reading or black_reading:
                 self.lastLockTime = now
-                print('hit')
                 handler(red_reading, black_reading)
-            time.sleep(0.1)
+            self.event.wait(0.1)

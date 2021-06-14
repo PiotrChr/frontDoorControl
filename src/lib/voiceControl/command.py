@@ -3,7 +3,7 @@ from pprint import pprint
 
 
 class Command:
-    def __init__(self, name, regex_identifiers=None, has_params=None, param_filters=None, handler=None):
+    def __init__(self, name=None, regex_identifiers=None, has_params=None, param_filters=None, handler=None):
         self.name = name
         self.regex_identifiers = regex_identifiers
         self.has_params = has_params
@@ -39,4 +39,7 @@ class Command:
         return valid
 
     def handle(self):
-        self.handler(self.param)
+        if self.has_params:
+            self.handler(self.param)
+        else:
+            self.handler()
