@@ -106,6 +106,20 @@ class Db:
                     CREATE INDEX IF NOT EXISTS idx_light_created_at
                     ON light (created_at)
                 """)
+
+                self.connection.execute("""
+                    CREATE TABLE IF NOT EXISTS day_passwords (
+                        id INTEGER PRIMARY KEY,
+                        created_at DATETIME NOT NULL,
+                        password TEXT NOT NULL,
+                        active INT NOT NULL,    
+                    )
+                """)
+
+                self.connection.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_day_passwords_created_at
+                    ON day_passwords (created_at)
+                """)
         except Exception as e:
             print('Exception', e)
 
@@ -244,6 +258,8 @@ class Db:
 
         pass
 
+# Cleanup
+
     def clear_acc(self):
         self.clear_db_up_to_date('acc')
 
@@ -261,3 +277,27 @@ class Db:
 
     def clear_acc_up_to_date(self, stop):
         self.clear_db_up_to_date('acc', stop)
+
+# Password
+
+    def get_current_password(self):
+        try:
+            with self.connection:
+                self.connection.execute("""
+                    SELECT password from day_passwords
+                    WHERE active = 1
+                """)
+        except Exception as e:
+            print('Exception', e)
+
+    def add_password(self, password, active=0):
+        created_at = datetime.now()
+
+        try:
+            with self.connection:
+                self.connection.execute("""
+                    INSERT INTO day_passwords
+                    values (?,?,?,?)
+                """, (None, created_at, password, active))
+        except Exception as e:
+            print('Exception', e)

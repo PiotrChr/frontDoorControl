@@ -7,23 +7,9 @@ class SpeechRecognition:
     TIMEOUT = 5
     PHRASE_TIME_LIMIT = 5
 
-    def __init__(self, speech_recognition_handler: voiceControl.VoiceControl):
+    def __init__(self):
         self.recognizer = sr.Recognizer()
-        self.handler = speech_recognition_handler
-
-        self.stopped = False
-        self.t = None
-
-    def start(self):
-        self.stopped = False
-        self.t = threading.Thread(
-            target=self.worker,
-            daemon=True,
-        )
-        self.t.start()
-
-    def stop(self):
-        self.stopped = True
+        self.last_recognized_text = None
 
     def recognize(self, audio):
         try:
@@ -54,9 +40,8 @@ class SpeechRecognition:
 
         return audio
 
-    def worker(self):
-        while True and not self.stopped:
-            audio = self.listen()
-            recognized_text = self.recognize(audio)
-            if not self.handler.handle(recognized_text):
-                self.stopped = True
+    def listen_and_recognize(self):
+        audio = self.listen()
+        self.last_recognized_text = self.recognize(audio)
+
+        return self.last_recognized_text

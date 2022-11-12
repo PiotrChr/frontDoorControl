@@ -3,13 +3,14 @@ from pprint import pprint
 
 
 class Command:
-    def __init__(self, name=None, regex_identifiers=None, has_params=None, param_filters=None, handler=None):
+    def __init__(self, name=None, regex_identifiers=None, has_params=None, param_filters=None, handler=None, requires_auth=None):
         self.name = name
         self.regex_identifiers = regex_identifiers
         self.has_params = has_params
         self.param = None
         self.param_filters = param_filters
         self.handler = handler
+        self.requires_auth = requires_auth
 
     def match_and_prepare(self, text):
         pprint(self.regex_identifiers)

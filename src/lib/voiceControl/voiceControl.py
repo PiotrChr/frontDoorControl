@@ -10,18 +10,21 @@ class VoiceControl:
         self.main_handler = None
         self.idle_handler = None
         self.error_handler = None
+        self.auth_handler = None
+        self.unauthorized_handler = None
         self.handlers = []
         self.not_recognized = None
         self.event = event
 
-    def add_command(self, name, regex_identifiers, has_params=False, param_filters=None, handler=None):
+    def add_command(self, name, regex_identifiers, has_params=False, param_filters=None, handler=None, requires_auth=None):
         self.handlers.append(
             libcommand.Command(
                 name=name,
                 regex_identifiers=regex_identifiers,
                 has_params=has_params,
                 param_filters=param_filters,
-                handler=handler
+                handler=handler,
+                requires_auth=requires_auth
             )
         )
 
@@ -33,6 +36,12 @@ class VoiceControl:
 
     def add_error_handler(self, handler=None):
         self.error_handler = handler
+
+    def add_auth_handler(self, handler=None):
+        self.auth_handler = handler
+
+    def add_unauthorized_handler(self, handler=None):
+        self.unauthorized_handler = handler
 
     def add_not_recognized_command(self, handler=None):
         self.not_recognized = libcommand.Command(
@@ -48,7 +57,16 @@ class VoiceControl:
         if not command:
             command = self.not_recognized
 
-        command.handle()
+        handle = None
+        if not command.requires_auth:
+            handle = command.handle()
+
+        if self.auth_handler.handle():
+            handle = command.handle()
+        else:
+            handle = self.unauthorized_handler.handle()
+
+        return handle()
 
     def get_command_by_text(self, text):
         for command in self.handlers:

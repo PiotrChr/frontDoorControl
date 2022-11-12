@@ -92,11 +92,17 @@ class Concierge:
             lambda error: self.handle_command_error(error)
         )
 
+        self.speech.handler.add_auth_handler(
+            lambda error: self.handle_auth()
+        )
+
+        self.speech.handler.add_unauthorized_handler(
+            lambda error: self.handle_unath()
+        )
+
         self.speech.handler.add_command(
             name="OpenDoor",
-            regex_identifiers=[
-                "open door"
-            ],
+            regex_identifiers=["open the pod bay doors, hal"],
             handler=lambda: self.open_door() or True
         )
 
@@ -145,6 +151,14 @@ class Concierge:
         self.send_text_message("...?", promptMessanger.PromptMessenger.MESSAGE_WARNING)
         self.wait_and_close()
 
+    def handle_auth(self):
+        self.send_text_message("What's today's password dear?")
+        self.event.wait(1)
+        pass
+
+    def handle_unath(self):
+        pass
+
     def wait_and_close(self):
         self.event.wait(2)
         self.prompt_messenger.send_message(
@@ -158,6 +172,9 @@ class Concierge:
         self.send_text_message("I don't know what you mean.", promptMessanger.PromptMessenger.MESSAGE_WARNING)
         self.event.wait(4)
         self.wait_and_close()
+
+    def authenticate(self):
+        pass
 
     def handle_idle_press_red(self):
         if not self.state.screen:
